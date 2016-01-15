@@ -2,8 +2,13 @@ package com.example.pengfeixie.floatingsector;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -29,6 +34,10 @@ public class RevealLayout extends FrameLayout {
 
     private boolean isOpen = false;
 
+    private Bitmap bitmap;
+
+    private Paint paint;
+
     public RevealLayout(Context context) {
         this(context, null);
     }
@@ -41,6 +50,10 @@ public class RevealLayout extends FrameLayout {
     public RevealLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mClipPath = new Path();
+        paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setFilterBitmap(true);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
@@ -48,6 +61,7 @@ public class RevealLayout extends FrameLayout {
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+
         mClipCenterX = w / 2;
         mClipCenterY = h / 2;
         if (!mIsContentShown) {
@@ -55,6 +69,7 @@ public class RevealLayout extends FrameLayout {
         } else {
             mClipRadius = (float) (Math.sqrt(w * w + h * h) / 2);
         }
+        bitmap = Bitmap.createBitmap(getWidth(), getWidth(), Bitmap.Config.ARGB_8888);
 
         super.onSizeChanged(w, h, oldw, oldh);
     }
@@ -295,10 +310,12 @@ public class RevealLayout extends FrameLayout {
             boolean result;
             mClipPath.reset();
             mClipPath.addCircle(mClipCenterX, mClipCenterY, mClipRadius, Path.Direction.CW);
+            canvas.setDrawFilter(new PaintFlagsDrawFilter(0, Paint.FILTER_BITMAP_FLAG|Paint.ANTI_ALIAS_FLAG));
 
 //            Log.d("RevealLayout", "ClipRadius: " + mClipRadius);
             canvas.save();
             canvas.clipPath(mClipPath);
+            canvas.drawBitmap(bitmap, 0, 0, paint);
             result = super.drawChild(canvas, child, drawingTime);
             canvas.restore();
             return result;
