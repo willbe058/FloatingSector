@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <com.example.pengfeixie.floatingsector.RevealLayout
+        android:id="@+id/reveal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true">
+
+        <View
+            android:id="@+id/back"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/material_blue_500"
+            android:visibility="gone" />
+
+    </com.example.pengfeixie.floatingsector.RevealLayout>
+
+    <com.example.pengfeixie.floatingsector.MainButton
+        android:id="@+id/main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="16dp"
+        android:src="@mipmap/ic_add_white_24dp" />
+</RelativeLayout>
